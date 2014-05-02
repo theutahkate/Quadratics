@@ -1,3 +1,23 @@
+def quadratic():
+
+    exp=input('Enter a quadratic expression in the form x^2+bx+c:  ')
+
+   #determines if input is a valid quadratic expression 
+    exponents=''
+    for i in range(len(exp) - 1):
+        if exp[i] == "^":
+            exponents=exponents+exp[i+1]
+
+    if "2" in exponents and len(exponents)==1:
+        factored(exp)
+        
+    #rejects invalid expression and prompts user for another
+    else:
+        print ("This is not a valid quadratic expression.")
+        quadratic()
+
+
+#split takes the string input, splits into terms, finds the b and c coefficients
 def split(exp):
     global b
     global c
@@ -8,7 +28,8 @@ def split(exp):
     terms_list = terms_list.split('+')
 
     del terms_list[0]
-    
+
+    #deals with the case of b=0
     if len(terms_list)==1:
         terms_list.insert(0, '0x')
         
@@ -21,23 +42,6 @@ def split(exp):
     
 
 
-def quadratic():
-    
- #prompt user for expression  
-    exp=input('Enter a quadratic expression in the form x^2+bx+c:  ')
-
-    
-    exponents=''
-    for i in range(len(exp) - 1):
-        if exp[i] == "^":
-            exponents=exponents+exp[i+1]
-    
-    if "2" in exponents and len(exponents)==1:
-        factored(exp)    
-
-    else:
-        print ("This is not a valid quadratic expression.")
-        quadratic()
 
 
 
@@ -48,22 +52,24 @@ def factored(exp):
 
     split(exp)
     
-    #makes a list of all factors
+    #makes a list of all positive factors of c
     c_factors=[]
     if c>0:
         for i in range(1,c+1):
             if c%i==0:
                 c_factors.append(i)
+
+    #makes a list of all factors of c, positive and negative
     elif c<0:
         for i in range(c,0):
             if c%i==0:
                 c_factors.append(i)
                 c_factors.append(i*-1)
                 
-    #return c_factors
 
 
-    #pairs and adds factors to find the pair that adds to b
+    #remaining section pairs and adds corresponding factors to find the pair that adds to b
+
     n=len(c_factors)-1
 
     #this loop is for the difference of two squares
@@ -73,13 +79,21 @@ def factored(exp):
         
      #this loop is for all other cases
      #adds first factor in the list with the last factor, compares to |b|,then goes to next factor
-            #and penultimate factor. then determines the right pair of factors
+            #and penultimate factor and so on, then determines the right pair of factors
     else:
+        final=[]
         for i in c_factors:
             if i+c_factors[n] == abs(b):
                 factor1 = i
                 factor2 = c_factors[n]
+                final.append(factor1)
+                final.append(factor2)
             n=n-1
+
+        #asking if final list is empty tells us if the expression can be factored
+        if len(final)==0:
+            print('This quadratic expression cannot be factored. Try the quadratic formula.')
+            quadratic()
 
         if c>0:
             
